@@ -1,6 +1,9 @@
 % Pupil analysis
-% written by YH
-% 6/11/2019
+% written by RM
+% 7/11/2019
+
+%with/without sorezoreni 1~5retuno zu wo kasaneru
+%ima yatteirunoha tType:1~3 wo hensuu ni irete itidoni byoga suru
 
 function D = pupilAnalysis02
 
@@ -8,8 +11,12 @@ function D = pupilAnalysis02
 
 % input
 gType = input('Group type? (1:with training, 2:w/o training) :  ');
-tType = input('Test type? (1:pre, 2:post, 3:re) :  ');
-pp = input('Plot trial data? (y/n) :  ', 's');
+
+%tType = input('Test type? (1:pre, 2:post, 3:re) :  ');
+pp = 'n'%input('Plot trial data? (y/n) :  ', 's');
+
+for tType=1:3
+
 
 if gType == 1
     ID = ['02';'03';'04';'05';'06';'08';'09';'11';'12';'14';'15';'16';'17';'21';'22';'24'];
@@ -336,7 +343,7 @@ D.mData(:,4) = nanmean(D.mean.single_p.untrained(:,find(idx==sdat):find(idx==eda
 D.mData(:,5) = nanmean(D.mean.dual.trained(:,find(idx==sdat):find(idx==edat)));
 D.mData(:,6) = nanmean(D.mean.dual.untrained(:,find(idx==sdat):find(idx==edat)));
 
-figure(...
+FH1=figure(...
     'InvertHardcopy', 'off',...
     'Color', [1 1 1],...
     'Position', [0 0 1600 600]);
@@ -380,39 +387,83 @@ figure(...
 %     'k','LineWidth',2);
 % title('Dual (untrained)')
 
-fst=nanmean(D.mean.single_c(:,find(idx==sdat):find(idx==edat)))'
-snd=nanmean(D.mean.single_p.trained(:,find(idx==sdat):find(idx==edat)))'
-trd=nanmean(D.mean.single_p.untrained(:,find(idx==sdat):find(idx==edat)))'
-foth=nanmean(D.mean.dual.trained(:,find(idx==sdat):find(idx==edat)))'
-fith=nanmean(D.mean.dual.untrained(:,find(idx==sdat):find(idx==edat)))'
+figDat.fst(:,tType)=nanmean(D.mean.single_c(:,find(idx==sdat):find(idx==edat)))';
+figDat.snd(:,tType)=nanmean(D.mean.single_p.trained(:,find(idx==sdat):find(idx==edat)))';
+figDat.trd(:,tType)=nanmean(D.mean.single_p.untrained(:,find(idx==sdat):find(idx==edat)))';
+figDat.foth(:,tType)=nanmean(D.mean.dual.trained(:,find(idx==sdat):find(idx==edat)))';
+figDat.fith(:,tType)=nanmean(D.mean.dual.untrained(:,find(idx==sdat):find(idx==edat)))';
 
-
+figure(FH1)
 subplot(1,5,1);
 plot(sdat:edat,...
     nanmean(D.mean.single_c(:,find(idx==sdat):find(idx==edat)))',...
-    'k','LineWidth',2);
+    'k','LineWidth',2);hold on;
 title('Single central')
 subplot(1,5,2);
 plot(sdat:edat,...
     nanmean(D.mean.single_p.trained(:,find(idx==sdat):find(idx==edat)))',...
-    'k','LineWidth',2);
+    'k','LineWidth',2);hold on;
 title('Single peripheral (trained)')
 subplot(1,5,3);
 plot(sdat:edat,nanmean(D.mean.single_p.untrained(:,find(idx==sdat):find(idx==edat)))',...
-    'k','LineWidth',2);
+    'k','LineWidth',2);hold on;
 title('Single peripheral (untrained)')
 subplot(1,5,4);
 plot(sdat:edat,nanmean(D.mean.dual.trained(:,find(idx==sdat):find(idx==edat)))',...
-    'k','LineWidth',2);
+    'k','LineWidth',2);hold on;
 title('Dual (trained)')
 subplot(1,5,5);
 plot(sdat:edat,nanmean(D.mean.dual.untrained(:,find(idx==sdat):find(idx==edat)))',...
-    'k','LineWidth',2);
+    'k','LineWidth',2);hold on;
 title('Dual (untrained)')
 
 
-for ii=1:10
-    subplot(2,5,ii)
+for ii=1:5
+    subplot(1,5,ii)
+    hold on;
+    
+    if ii<6
+        ylim([-.05 .05])
+        plot([0 0],[-.05 .05],'--r');
+        lgd = legend(name,'Location','northwest');
+        lgd.FontSize = 8;
+    else
+        ylim([-.05 .05])
+        plot([0 0],[-.05 .05],'--r');
+    end
+end
+end
+FH2=figure(...
+    'InvertHardcopy', 'off',...
+    'Color', [1 1 1],...
+    'Position', [0 0 1600 600]);
+figure(FH2)
+subplot(1,5,1);
+plot(sdat:edat,...
+    figDatat.fst,...
+    'k','LineWidth',2);hold on;
+title('Single central')
+subplot(1,5,2);
+plot(sdat:edat,...
+    figDat.snd,...
+    'k','LineWidth',2);hold on;
+title('Single peripheral (trained)')
+subplot(1,5,3);
+plot(sdat:edat,figDat.trd,...
+    'k','LineWidth',2);hold on;
+title('Single peripheral (untrained)')
+subplot(1,5,4);
+plot(sdat:edat,figDat.foth,...
+    'k','LineWidth',2);hold on;
+title('Dual (trained)')
+subplot(1,5,5);
+plot(sdat:edat,figDat.fith,...
+    'k','LineWidth',2);hold on;
+title('Dual (untrained)')
+
+
+for ii=1:5
+    subplot(1,5,ii)
     hold on;
     
     if ii<6
